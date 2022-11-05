@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 void main(){
   runApp(MyApp());
@@ -25,8 +27,15 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var controller = 0;
-
+    int controller = 3;
+    List<String> photo = [
+      'pic/0.png',
+      'pic/1.png',
+      'pic/2.png',
+      'pic/3.png',
+    ];
+    var img = Image.asset(photo[controller]);
+    
     var backbtn = ElevatedButton(
       style: ElevatedButton.styleFrom(
         primary: Colors.indigo[900], // background
@@ -34,6 +43,7 @@ class HomePage extends StatelessWidget {
       ),
       onPressed: () {
         (controller > 0) ? controller-- : controller == 0;
+        img = Image.asset(photo[controller]);
       },
       child: Text('▲ Back'),
     );
@@ -44,12 +54,11 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.cyan[900],
       ),
       onPressed: () {
-        (controller < 3) ? controller++ : controller == 3;
+        (controller < photo.length-1) ? controller++ : controller == photo.length-1;
+        img = Image.asset(photo[controller]);
       },
       child: Text('▼ Next'),
     );
-
-
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +67,12 @@ class HomePage extends StatelessWidget {
         Container(
           width: 800,
           height: 500,
-          child: imgSet(context, controller),
+          child: InkWell(
+              onTap: (){
+                _showSnackBar(context, 'photo_$controller');
+              },
+              child: img,
+          ),
           alignment: Alignment.topCenter,
           margin: EdgeInsets.all(20),
         ),
@@ -104,20 +118,5 @@ class HomePage extends StatelessWidget {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
-  }
-
-  TextButton imgSet(BuildContext context, var controller){
-    var photo = [
-      'pic/0.png',
-      'pic/1.png',
-      'pic/2.png',
-      'pic/3.png',
-    ];
-    return TextButton(
-      onPressed: () {
-        _showSnackBar(context, 'photo: $controller');
-      },
-      child: Image.asset(photo[controller]),
-    );
   }
 }
